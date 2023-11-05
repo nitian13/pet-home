@@ -18,8 +18,9 @@
           v-for="tag in tags"
           :key="tag.name"
           closable
-          :type="tag.type">
-          {{tag.name}}
+          :type="tag.type"
+        >
+          {{ tag.name }}
         </el-tag>
       </el-form-item>
       <el-form-item>
@@ -40,11 +41,10 @@ export default {
         name: '',
         state: ''
       },
-      parentDepartment: null,
       tags: []
     }
   },
-
+  parentDepartment: null,
   created() {
     this.parentDepartment = this.$route.params.data
     console.log(this.parentDepartment)
@@ -91,8 +91,7 @@ export default {
 </script>
 
 <style scoped>
-.line{
-  text-align: center;
-}
+  .line{
+    text-align: center;
+  }
 </style>
-

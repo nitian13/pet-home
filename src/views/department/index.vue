@@ -35,11 +35,11 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="150"
+          width="250"
         >
           <template slot-scope="scope">
-            <el-button @click="deleteEmployee(scope.id)">删除</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button @click="deleteEmployee(scope.row)">删除</el-button>
+            <el-button @click="editEmployee(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,10 +82,8 @@
 
 <script>
 import { list } from '@/api/department'
-import { getList } from '@/api/table'
 import { deleteDepartment } from '@/api/department'
-import { addEmployee, findAll, deleteEmployee } from '@/api/employee'
-import scope from 'mockjs'
+import { addEmployee, deleteEmployee, find, updateEmployee } from '@/api/employee'
 
 export default {
   data() {
@@ -119,7 +117,6 @@ export default {
     this.treeData()
     this.fetchData()
   },
-
   methods: {
     filterNode(value, data) {
       if (!value) return true
@@ -135,17 +132,9 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      findAll().then(Response => {
-        this.data = Response.data
+      find().then(response => {
+        this.data = response.data
         this.tableData = this.data
-        console.log(this.data)
-      })
-    },
-    fetchDatas() {
-      this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
-        this.listLoading = false
       })
     },
     toAddDepartmentPage() {
@@ -157,16 +146,9 @@ export default {
         const d1 = this.data1[0]
         this.$router.push({ name: 'Create', params: { data: d1 }})
       }
-      // 获取当前的企业是那个
-      // this.$router.push({ path: '/department/create' })
     },
-
     deleteDepartment() {
       const currentNode = this.$refs.tree2.getCurrentNode()
-      if (!currentNode) {
-        this.$message.warning('请选择要删除的部门')
-        return
-      }
       const departmentId = currentNode.id
       this.$confirm('确认删除该部门吗?', '提示', {
         confirmButtonText: '确定',
@@ -176,13 +158,11 @@ export default {
         .then(() => {
           deleteDepartment({ id: departmentId })
             .then(() => {
-              // 处理删除成功的情况
               this.treeData()
-              this.fetchDatas()
+              this.fetchData()
               this.$message.success('部门删除成功')
             })
             .catch(error => {
-              // 处理删除失败的情况
               console.error('删除部门失败', error)
               this.$message.error('部门删除失败')
             })
@@ -199,46 +179,62 @@ export default {
         state: this.form.state,
         age: this.form.age,
         did: this.form.did
-
       }
       addEmployee(requestData).then(response => {
         console.log(response)
         if (response['resultCode'] === 200) {
+          this.fetchData()
           this.$router.push({ path: '/department/index' })
         } else {
           this.$message(response['message'])
         }
       })
     },
-    deleteEmployee() {
-      const employeeId = scope.id
-      this.$confirm('确认删除该员工吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+    editEmployee(row) {
+      this.$message('submit!')
+      console.log(this.form)
+      const requestData = {
+        username: this.form.username,
+        password: this.form.password,
+        email: this.form.email,
+        phone: this.form.phone,
+        state: this.form.state,
+        age: this.form.age,
+        did: this.form.did
+      }
+      updateEmployee(requestData).then(response => {
+        console.log(response)
+        if (response['resultCode'] === 200) {
+          this.fetchData()
+          this.$router.push({ path: '/department/index' })
+        } else {
+          this.$message(response['message'])
+        }
       })
-        .then(() => {
-          deleteEmployee({ id: employeeId })
-            .then(() => {
-              this.treeData()
-              this.fetchData()
-              this.$message.success('员工删除成功')
-            })
-            .catch(error => {
-              console.error('删除员工失败', error)
-              this.$message.error('员工删除失败')
-            })
-        })
+    },
+    deleteEmployee(row) {
+      console.log(row.id)
+      const Id = {
+        id: row.id
+      }
+      deleteEmployee(Id).then(response => {
+        if (response['resultCode'] === 200) {
+          this.$message('删除成功')
+        } else {
+          this.$message(response['message'])
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-  .sidebar-action{
+  .sidebar-action {
     margin-bottom: 16px;
     margin-top: 18px;
   }
+
   .app-container {
     flex: 1;
     display: flex;
@@ -246,15 +242,16 @@ export default {
     font-size: 14px;
     padding-right: 8px;
   }
-  .left-block{
+
+  .left-block {
     width: 300px;
     flex-grow: 1;
     margin-left: 32px;
     margin-right: 32px;
     border-right: 2px solid gainsboro;
   }
-  .right-block{
+
+  .right-block {
     flex-grow: 2;
   }
 </style>
-
