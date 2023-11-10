@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">登录页面</h3>
+        <h3 class="title">登录界面</h3>
       </div>
 
       <el-form-item prop="username">
@@ -41,14 +41,8 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
-      <el-button class="shopregister" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleShopReister">商家注册</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:16px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-button class="shop_register" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleShopRegister">商家入驻</el-button>
     </el-form>
   </div>
 </template>
@@ -128,25 +122,8 @@ export default {
           this.$message(response['message'])
         }
       })
-      // this.$router.push({ path: this.redirect || '/' })
-      // this.$refs.loginForm.validate(valid => {
-      //   console.log(valid)
-      //   if (valid) {
-      //     this.loading = true
-      //     this.$store.dispatch('user/login', this.loginForm)
-      //       .then(() => {
-      //       this.$router.push({ path: this.redirect || '/' })
-      //       this.loading = false
-      //     }).catch(() => {
-      //       this.loading = false
-      //     })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
     },
-    handleShopReister() {
+    handleShopRegister() {
       this.$router.push({ path: '/shopregister' })
     }
   }
@@ -159,7 +136,7 @@ export default {
 
   $bg:#283443;
   $light_gray:#fff;
-  $cursor: #ffffff;
+  $cursor: #fff;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
     .login-container .el-input input {
@@ -190,15 +167,15 @@ export default {
         }
       }
     }
-    .shopregister{
-      margin-left: 0;
-    }
 
     .el-form-item {
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(0, 0, 0, 0.1);
       border-radius: 5px;
       color: #454545;
+    }
+    .shop_register{
+      margin-left: 0;
     }
   }
 </style>

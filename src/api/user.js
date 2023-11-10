@@ -4,10 +4,9 @@ export function login(data) {
   return request({
     url: '/api/login',
     method: 'post',
-    params: data
+    data
   })
 }
-
 export function getInfo(token) {
   return request({
     url: '/vue-admin-template/user/info',
